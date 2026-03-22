@@ -7,8 +7,8 @@ on:
   watch:
     types: [started]
   schedule:
-    - cron: '0 */12 * * *'
-  workflow_dispatch:  # 建议添加，方便手动测试
+    - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   ClockIn:
@@ -18,18 +18,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       
-      - name: Install python3
-        run: |
-          sudo -E apt-get -yqq update
-          sudo -E apt-get -yqq install python3 python3-pip
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
       
       - name: Install dependencies
         run: |
-          pip3 install requests  # 添加依赖安装
+          pip install requests
       
-      - name: clock In
+      - name: Clock In
         env:
           ACCOUNT: ${{ secrets.ACCOUNT }}
-          PASSWORD: ${{ secrets.PASSWORD }}  # 修正：PASSwORD → PASSWORD
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          python3 clock-in.py "$ACCOUNT" "$PASSWORD"  # 修正：使用 "$变量" 格式
+          python3 clock-in.py "$ACCOUNT" "$PASSWORD"
